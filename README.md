@@ -96,3 +96,14 @@ http://127.0.0.1:8000
 5) Остановить
 В том же терминале: Ctrl+C
 
+
+
+----
+
+А теперь на практике, основные команды которые реально могут помоч
+заходим в папку с прогой cd /home/admin/web/staycasino7.de/public_html/towebp/
+
+CTRL + C
+pkill -f "php -S"
+git pull origin master
+bash run.sh
