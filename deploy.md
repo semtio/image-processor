@@ -22,13 +22,13 @@ git push -u origin main
 ssh root@185.209.20.80
 
 # Перейти в директорию проекта
-cd /root/image-processor
+cd /home/admin/web/staycasino7.de/public_html/towebp
 
 # Инициализировать git (если ещё не сделано)
 git init
 
 # Добавить remote
-git remote add origin https://github.com/ваш-username/image-processor.git
+git remote add origin https://github.com/semtio/image-processor.git
 
 # Получить изменения
 git fetch origin
@@ -61,7 +61,7 @@ git push origin main
 ssh root@185.209.20.80
 
 # Перейти в директорию проекта
-cd /root/image-processor
+cd /home/admin/web/staycasino7.de/public_html/towebp
 
 # Остановить сервер (если запущен через systemd)
 sudo systemctl stop image-processor
@@ -91,7 +91,7 @@ echo "Обновление Image Processor..."
 systemctl stop image-processor 2>/dev/null
 
 # Получить изменения
-cd /root/image-processor
+cd /home/admin/web/staycasino7.de/public_html/towebp
 git pull origin main
 
 # Запустить сервис
@@ -102,7 +102,7 @@ echo "Обновление завершено!"
 
 Использование:
 ```bash
-ssh root@185.209.20.80 "bash /root/image-processor/update.sh"
+ssh root@185.209.20.80 "bash /home/admin/web/staycasino7.de/public_html/towebp/update.sh"
 ```
 
 ### 5. Важные заметки
@@ -116,8 +116,8 @@ ssh root@185.209.20.80 "bash /root/image-processor/update.sh"
 **Перед первым push создайте `.env` на сервере:**
 ```bash
 # На сервере
-echo "SERVER_IP=185.209.20.80" > /root/image-processor/.env
-echo "SERVER_PORT=8000" >> /root/image-processor/.env
+echo "SERVER_IP=185.209.20.80" > /home/admin/web/staycasino7.de/public_html/towebp/.env
+echo "SERVER_PORT=8001" >> /home/admin/web/staycasino7.de/public_html/towebp/.env
 ```
 
 ### 6. Проверка работы
@@ -128,7 +128,7 @@ echo "SERVER_PORT=8000" >> /root/image-processor/.env
 ps aux | grep "php -S"
 
 # Проверить доступность
-curl http://185.209.20.80:8000/
+curl http://185.209.20.80:8001/
 ```
 
-Или откройте в браузере: http://185.209.20.80:8000/
+Или откройте в браузере: http://185.209.20.80:8001/

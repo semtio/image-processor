@@ -11,7 +11,7 @@ BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-PROJECT_DIR="/root/image-processor"
+PROJECT_DIR="/home/admin/web/staycasino7.de/public_html/towebp"
 
 echo ""
 echo "┌─────────────────────────────────────────────┐"
@@ -67,5 +67,5 @@ fi
 echo ""
 echo -e "${GREEN}✓${NC} Обновление завершено!"
 echo ""
-echo "Проверьте работу: http://185.209.20.80:8000/"
+echo "Проверьте работу: http://185.209.20.80:8001/"
 echo ""
