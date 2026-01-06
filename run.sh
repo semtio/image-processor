@@ -169,4 +169,4 @@ echo "   Default Sizes: 300px, 600px, 1200px"
 echo ""
 
 # Start server (always use 0.0.0.0 to listen on all interfaces)
-exec php -S 0.0.0.0:$SERVER_PORT -t "$DOCROOT" -r router.php
+exec php -S 0.0.0.0:$SERVER_PORT -t "$DOCROOT" -r "$DOCROOT/router.php"
