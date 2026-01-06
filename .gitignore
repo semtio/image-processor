@@ -1,0 +1,11 @@
+uploads/
+output/
+.env
+.env.local
+.DS_Store
+.vscode/
+*.log
+node_modules/
+dist/
+build/
+.git/
