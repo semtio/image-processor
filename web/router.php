@@ -13,8 +13,8 @@ $relative_path = substr($request_path, strlen($script_dir));
 // Routes handling
 if (strpos($relative_path, '/api/') === 0) {
     // API requests
-    require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'api.php';
+    require __DIR__ . DIRECTORY_SEPARATOR . 'api.php';
 } else {
     // Serve index.html for all other requests
-    require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'index.html';
+    require __DIR__ . DIRECTORY_SEPARATOR . 'index.html';
 }

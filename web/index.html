@@ -484,16 +484,31 @@
         // Load config
         async function loadConfig() {
             try {
+                console.log('Loading config from:', `${API_BASE}/config`);
                 const response = await fetch(`${API_BASE}/config`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
                 config = await response.json();
-                renderSizes(config.sizes);
+                console.log('Config loaded:', config);
+
+                if (config.sizes && config.sizes.length > 0) {
+                    renderSizes(config.sizes);
+                    console.log('Sizes rendered:', config.sizes);
+                } else {
+                    console.error('No sizes in config');
+                    showMessage('No thumbnail sizes available', 'error');
+                }
             } catch (error) {
-                showMessage('Failed to load configuration', 'error');
-                console.error(error);
+                console.error('Failed to load config:', error);
+                showMessage('Failed to load configuration: ' + error.message, 'error');
             }
         }
 
         function renderSizes(sizes) {
+            console.log('renderSizes called with:', sizes);
             sizesGrid.innerHTML = '';
             const defaultSizes = [300, 600, 1200];
 
@@ -522,11 +537,15 @@
                     } else {
                         selectedSizes.delete(size);
                     }
+                    console.log('Selected sizes:', Array.from(selectedSizes));
                 });
 
                 sizesGrid.appendChild(checkbox);
                 sizesGrid.appendChild(label);
             });
+
+            console.log('Checkboxes created:', sizesGrid.children.length);
+            console.log('Default selected sizes:', Array.from(selectedSizes));
         }
 
 
