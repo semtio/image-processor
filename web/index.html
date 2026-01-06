@@ -487,8 +487,6 @@
                 const response = await fetch(`${API_BASE}/config`);
                 config = await response.json();
                 renderSizes(config.sizes);
-                // Select default sizes (300, 600, 1200)
-                selectDefaultSizes([300, 600, 1200]);
             } catch (error) {
                 showMessage('Failed to load configuration', 'error');
                 console.error(error);
@@ -497,6 +495,8 @@
 
         function renderSizes(sizes) {
             sizesGrid.innerHTML = '';
+            const defaultSizes = [300, 600, 1200];
+
             sizes.forEach(size => {
                 const id = `size-${size}`;
                 const checkbox = document.createElement('input');
@@ -504,6 +504,12 @@
                 checkbox.id = id;
                 checkbox.className = 'size-checkbox';
                 checkbox.value = size;
+
+                // Auto-select default sizes
+                if (defaultSizes.includes(size)) {
+                    checkbox.checked = true;
+                    selectedSizes.add(size);
+                }
 
                 const label = document.createElement('label');
                 label.htmlFor = id;
@@ -523,15 +529,7 @@
             });
         }
 
-        function selectDefaultSizes(sizes) {
-            sizes.forEach(size => {
-                const checkbox = document.querySelector(`input[value="${size}"]`);
-                if (checkbox) {
-                    checkbox.checked = true;
-                    selectedSizes.add(size);
-                }
-            });
-        }
+
 
         // Quality slider
         qualitySlider.addEventListener('input', (e) => {
@@ -634,13 +632,16 @@
         processBtn.addEventListener('click', processImages);
 
         async function processImages() {
-            if (images.length === 0 || selectedSizes.size === 0) {
-                showMessage('Please upload images and select sizes', 'error');
+            if (images.length === 0) {
+                showMessage('Please upload images', 'error');
                 return;
             }
 
             const quality = parseInt(qualitySlider.value);
-            const sizes = Array.from(selectedSizes).sort((a, b) => a - b);
+            // If no sizes selected, use default sizes
+            const sizes = selectedSizes.size > 0
+                ? Array.from(selectedSizes).sort((a, b) => a - b)
+                : [300, 600, 1200];
 
             processBtn.disabled = true;
 
