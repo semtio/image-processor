@@ -81,8 +81,9 @@ class ImageProcessor {
         $origHeight = $dims['h'];
         $type = $dims['type'];
 
-        // Don't upscale - if target is larger than original, skip
-        if ($targetWidth >= $origWidth) {
+        // Don't upscale: if target is larger than original, skip.
+        // If target equals original width, allow re-encode for compression.
+        if ($targetWidth > $origWidth) {
             return false;
         }
 

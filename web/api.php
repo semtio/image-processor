@@ -12,8 +12,8 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
     error_log("[$errno] $errstr in $errfile:$errline");
 });
 
-// Get root directory
-$root = dirname(dirname(__DIR__));
+// Get root directory (parent of web/)
+$rootDir = dirname(__DIR__);
 
 // CORS headers
 header('Access-Control-Allow-Origin: *');
@@ -25,15 +25,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Load configuration
-$configFile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php';
+$configFile = $rootDir . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php';
 $config = file_exists($configFile) ? require $configFile : [];
 
 // Initialize directories
-$uploadDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads';
-$outputDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'output';
+$uploadDir = $rootDir . DIRECTORY_SEPARATOR . 'uploads';
+$outputDir = $rootDir . DIRECTORY_SEPARATOR . 'output';
+
+// Create directories if they don't exist
+if (!is_dir($uploadDir)) {
+    mkdir($uploadDir, 0755, true);
+}
+if (!is_dir($outputDir)) {
+    mkdir($outputDir, 0755, true);
+}
 
 // Load ImageProcessor class
-require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'ImageProcessor.php';
+$processorFile = $rootDir . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'ImageProcessor.php';
+if (!file_exists($processorFile)) {
+    http_response_code(500);
+    echo json_encode(['error' => 'ImageProcessor class not found']);
+    exit;
+}
+require $processorFile;
 
 $processor = new ImageProcessor($uploadDir, $outputDir);
 
@@ -100,9 +114,10 @@ function handleUpload($processor, $uploadDir, $outputDir) {
         return;
     }
 
-    // Generate unique filename
+    // Use original filename (sanitized)
+    $originalName = pathinfo($file['name'], PATHINFO_FILENAME);
     $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-    $filename = uniqid('img_', true) . '.' . $ext;
+    $filename = preg_replace('/[^a-zA-Z0-9_-]/', '_', $originalName) . '.' . $ext;
     $filepath = $uploadDir . DIRECTORY_SEPARATOR . $filename;
 
     // Move uploaded file
