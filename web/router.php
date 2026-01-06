@@ -7,11 +7,9 @@
 
 // Get request path
 $request_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$script_dir = dirname($_SERVER['SCRIPT_NAME']);
-$relative_path = substr($request_path, strlen($script_dir));
 
 // Routes handling
-if (strpos($relative_path, '/api/') === 0) {
+if (strpos($request_path, '/api/') !== false) {
     // API requests
     require __DIR__ . DIRECTORY_SEPARATOR . 'api.php';
 } else {
