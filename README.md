@@ -42,9 +42,13 @@ SERVER_IP — интерфейс для прослушивания (0.0.0.0 — 
 ```
 bash run.sh
 ```
-Вариант 2 (в фоне, лог в server.log):
+Вариант 2 (в фоне, лог в server.log, продолжит работу после закрытия терминала):
 ```
-nohup php -S "$SERVER_IP:$SERVER_PORT" -t web web/router.php > server.log 2>&1 &
+nohup php -S "$SERVER_IP:$SERVER_PORT" -t web web/router.php > server.log 2>&1 & disown
+```
+Вариант 3 (еще один способ фонового запуска):
+```
+(php -S "$SERVER_IP:$SERVER_PORT" -t web web/router.php > server.log 2>&1 &)
 ```
 
 8) Открыть порт в фаерволе (если требуется)
@@ -71,7 +75,40 @@ pkill -f "php -S.*$SERVER_PORT"
 
 11) Перезапустить приложение
 ```
-pkill -f "php -S.*$SERVER_PORT" ; nohup php -S "$SERVER_IP:$SERVER_PORT" -t web web/router.php > server.log 2>&1 &
+pkill -f "php -S.*$SERVER_PORT" ; nohup php -S "$SERVER_IP:$SERVER_PORT" -t web web/router.php > server.log 2>&1 & disown
+```
+
+12) Автозапуск через systemd (опционально, для постоянной работы)
+Создать файл службы:
+```
+sudo nano /etc/systemd/system/image-processor.service
+```
+Содержимое файла:
+```
+[Unit]
+Description=Image Processor PHP Server
+After=network.target
+
+[Service]
+Type=simple
+User=ВАШ_ПОЛЬЗОВАТЕЛЬ
+WorkingDirectory=/home/USER/web/DOMAIN/public_html/app
+ExecStart=/usr/bin/php -S 0.0.0.0:8001 -t web web/router.php
+Restart=always
+StandardOutput=append:/home/USER/web/DOMAIN/public_html/app/server.log
+StandardError=append:/home/USER/web/DOMAIN/public_html/app/server.log
+
+[Install]
+WantedBy=multi-user.target
+```
+Команды управления:
+```
+sudo systemctl daemon-reload
+sudo systemctl enable image-processor  # автозапуск при загрузке системы
+sudo systemctl start image-processor   # запустить
+sudo systemctl stop image-processor    # остановить
+sudo systemctl restart image-processor # перезапустить
+sudo systemctl status image-processor  # проверить статус
 ```
 
 Локальный запуск (WSL/Linux)
@@ -100,10 +137,21 @@ http://127.0.0.1:8000
 
 ----
 
-А теперь на практике, основные команды которые реально могут помоч
+А теперь на практике, основные команды которые реально могут помочь
 заходим в папку с прогой cd /home/admin/web/staycasino7.de/public_html/towebp/
 
 CTRL + C
 pkill -f "php -S"
 git pull origin master
-bash run.sh
+nohup bash run.sh > server.log 2>&1 & disown
+
+Или напрямую запустить PHP-сервер в фоне:
+```
+nohup php -S 185.209.20.80:8082 -t web web/router.php > server.log 2>&1 & disown
+```
+
+Проверить работу:
+```
+ps aux | grep "php -S"
+tail -f server.log
+```
